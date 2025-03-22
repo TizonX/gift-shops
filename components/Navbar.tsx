@@ -21,10 +21,10 @@ const Navbar = () => {
   };
   return (
     <header className="bg-heart text-white w-full ease-in duration-300 fixed top-0 left-0 z-10">
-      <nav className="max-w-[1366px] mx-auto h-[100px] flex justify-between items-center p-4">
+      <nav className="max-w-[1366px] mx-auto h-[60px] flex justify-between items-center p-4">
         <div>
           <Link href={"/"}>
-            <span className="font-extrabold text-3xl md:text-2xl xl:text-3xl uppercase">
+            <span className="font-extrabold text-2xl md:text-2xl xl:text-2xl uppercase">
               Gift Shops
             </span>
           </Link>

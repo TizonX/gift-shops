@@ -2,11 +2,9 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCoffee,
   faUser,
   faMagnifyingGlass,
   faShoppingBag,
-  faHamburger,
   faBars,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";

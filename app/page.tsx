@@ -1,9 +1,8 @@
 import ProductCard from "@/components/ProductCard";
-import { faMagnifyingGlass, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { products } from "../util/product";
-import { Key } from "react";
 export default function Home() {
   const filtersList = ["category", "price", "brand"];
   type Product = {

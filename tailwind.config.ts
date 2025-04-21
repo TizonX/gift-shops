@@ -12,6 +12,7 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
         heart: "var(--heart)",
+        wight: "var(--wight)",
       },
     },
   },

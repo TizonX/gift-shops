@@ -1,12 +1,20 @@
+import ProductCard from "@/components/ProductCard";
 import { faMagnifyingGlass, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { products } from "../util/product";
+import { Key } from "react";
 export default function Home() {
   const filtersList = ["category", "price", "brand"];
-
+  type Product = {
+    name: string;
+    description: string;
+    price: number | string;
+    image: string;
+  };
   return (
     <div className="grid grid-cols-12 gap-1 h-screen mt-16">
-      <div className="col-span-3 hidden md:block w-64  h-screen">
+      <div className="col-span-3 hidden lg:block w-64 h-screen">
         <div className="w-[300px] fixed top-14 h-screen bg-gray-100 ">
           <h3 className="p-4 text-2xl font-bold">Filter</h3>
           <div className="mx-auto p-4 relative">
@@ -39,12 +47,10 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="col-span-9">
+      <div className="col-span-12 md:col-span-12 lg:col-span-9">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
-          {Array.from({ length: 20 }).map((_, index) => (
-            <div key={index} className="bg-white p-4 shadow rounded-lg h-48">
-              <p>Product {index + 1}</p>
-            </div>
+          {products.map((_: Product, index: number) => (
+            <ProductCard product={_} key={index} />
           ))}
         </div>
       </div>

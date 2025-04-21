@@ -1,0 +1,32 @@
+export const products = [
+  {
+    name: "Wireless Headphones",
+    description: "High-quality wireless headphones with noise cancellation.",
+    price: 3999,
+    image: "https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    name: "Smartwatch",
+    description: "Stylish smartwatch with health tracking features.",
+    price: 4999,
+    image: "https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    name: "Running Shoes",
+    description: "Comfortable and durable running shoes for all terrains.",
+    price: 2999,
+    image: "https://images.pexels.com/photos/7974/pexels-photo.jpg?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    name: "Bluetooth Speaker",
+    description: "Portable speaker with deep bass and clear sound.",
+    price: 1999,
+    image: "https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    name: "Gaming Keyboard",
+    description: "Mechanical keyboard with RGB lighting and fast response.",
+    price: 3499,
+    image: "https://images.pexels.com/photos/257699/pexels-photo-257699.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2?auto=format&fit=crop&w=800&q=80",
+  },
+];

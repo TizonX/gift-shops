@@ -26,8 +26,8 @@ export default function ProductCard({ product }: ProductCardProps) {
         <h2 className="text-lg font-semibold text-gray-800">{product.name}</h2>
         <p className="text-sm text-gray-600 mt-1 line-clamp-2">{product.description}</p>
         <div className="flex items-center justify-between mt-4">
-          <span className="text-xl font-bold text-blue-600">₹{product.price}</span>
-          <button className="bg-blue-500 text-white px-4 py-1 rounded-md text-sm hover:bg-blue-600 transition">
+          <span className="text-xl font-bold text-heart">₹{product.price}</span>
+          <button className="bg-heart text-white px-4 py-1 rounded-md text-sm hover:bg-heart-dark transition">
             Buy Now
           </button>
         </div>

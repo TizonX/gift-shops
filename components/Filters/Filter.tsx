@@ -6,7 +6,7 @@ interface FilterProps {
   FilterName?: FilterType;
   FilterCategories?: string[];
   filtersApplied?: string[];
-  handleCheckboxChange?: ((category: FilterType, value: string) => any) | null;
+  handleCheckboxChange?: ((category: FilterType, value: string) => void) | null;
 }
 const Filter: React.FC<FilterProps> = ({
   FilterName = "category",

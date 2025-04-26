@@ -4,12 +4,10 @@ import ProductCard from "@/components/ProductCard";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { products } from "../util/product";
-import { filterReducer, initialState } from "../reducers/filterReducer";
 import {
   CATEGORIES,
   BRANDS,
   PRICE_RANGES,
-  SORT_OPTIONS,
 } from "../constants/filtersData";
 import Filter from "../components/Filters/Filter";
 
@@ -33,7 +31,7 @@ export default function Home() {
     brand: [],
   });
 
-  const handleCheckboxChange = (filterType: FilterType, value: string): any => {
+  const handleCheckboxChange = (filterType: FilterType, value: string): void => {
     setFilters((prev) => {
       const isAlreadySelected = prev[filterType].includes(value);
       const updatedFilter = isAlreadySelected

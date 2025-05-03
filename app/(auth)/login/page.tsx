@@ -1,6 +1,7 @@
 "use client";
 import { api } from "@/app/lib/api";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, ChangeEvent, FormEvent } from "react";
 
 interface FormData {
@@ -11,7 +12,13 @@ interface FormErrors {
   email?: string;
   password?: string;
 }
+interface SigninApiError {
+  message: string;
+  status: number;
+  token?: string;
+}
 export default function SigninPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -22,9 +29,58 @@ export default function SigninPage() {
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [otp, setOtp] = useState("");
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {};
-  const handleSubmit = async (e: FormEvent) => {};
-  const handleOtpSubmit = async (e: FormEvent) => {};
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const res = await api("/auth/login", {
+        method: "POST",
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        router.push("/");
+      } else {
+        setMessage(data.message || "Login failed");
+      }
+    } catch (error) {
+      if (
+        (error instanceof Error &&
+          error?.message === "User not verified. OTP sent to your email.") ||
+        (error instanceof Error &&
+          error?.message ===
+            "User not verified. Please share the OTP to verify")
+      ) {
+        setShowOtpInput(true); // show OTP input
+        setMessage("OTP sent to your phone/email");
+      } else {
+        setMessage("Something went wrong");
+      }
+    }
+  };
+  const handleOtpSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await api("/auth/verifyOtp", {
+        method: "POST",
+        body: JSON.stringify({ email: formData.email, otp }),
+      });
+
+      if (res.ok) {
+        setMessage("Account verified!");
+      } else {
+        const data = await res.json();
+        setMessage(data.message || "Invalid OTP");
+      }
+    } catch (err) {
+      setMessage("OTP verification failed");
+    }
+  };
   return (
     <div className="max-w-md mx-auto space-y-4">
       <h2 className="text-xl font-bold text-center">Signup</h2>

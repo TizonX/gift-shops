@@ -95,6 +95,7 @@ export default function SignupPage() {
         setMessage(data.message || "Invalid OTP");
       }
     } catch (err) {
+      console.error(err);
       setMessage("OTP verification failed");
     }
   };

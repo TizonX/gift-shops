@@ -12,11 +12,6 @@ interface FormErrors {
   email?: string;
   password?: string;
 }
-interface SigninApiError {
-  message: string;
-  status: number;
-  token?: string;
-}
 export default function SigninPage() {
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
@@ -50,9 +45,9 @@ export default function SigninPage() {
       }
     } catch (error) {
       if (
-        (error instanceof Error &&
+        (
           error?.message === "User not verified. OTP sent to your email.") ||
-        (error instanceof Error &&
+        (
           error?.message ===
             "User not verified. Please share the OTP to verify")
       ) {

@@ -72,7 +72,8 @@ export default function SigninPage() {
         const data = await res.json();
         setMessage(data.message || "Invalid OTP");
       }
-    } catch (err) {
+    } catch (error) {
+      console.log(error);
       setMessage("OTP verification failed");
     }
   };

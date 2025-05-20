@@ -12,11 +12,6 @@ interface FormErrors {
   email?: string;
   password?: string;
 }
-interface SigninApiError {
-  message: string;
-  status: number;
-  token?: string;
-}
 export default function SigninPage() {
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
@@ -41,6 +36,7 @@ export default function SigninPage() {
       const res = await api("/auth/login", {
         method: "POST",
         body: JSON.stringify(formData),
+        credentials: "include",
       });
       const data = await res.json();
       if (res.ok) {
@@ -78,6 +74,7 @@ export default function SigninPage() {
         setMessage(data.message || "Invalid OTP");
       }
     } catch (err) {
+      console.log(err);
       setMessage("OTP verification failed");
     }
   };
@@ -145,7 +142,7 @@ export default function SigninPage() {
       {!showOtpInput && (
         <div className="flex justify-between text-blue-500">
           <div className="text-sm">
-            Don't have an account? <Link href="/signup">Sign Up</Link>
+            {"Don't"} have an account? <Link href="/signup">Sign Up</Link>
           </div>
           <div className="text-sm">Forget Password?</div>
         </div>

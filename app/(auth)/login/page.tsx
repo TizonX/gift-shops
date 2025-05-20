@@ -44,12 +44,13 @@ export default function SigninPage() {
       } else {
         setMessage(data.message || "Login failed");
       }
-    } catch (error) {
+    } catch (error: unknown) {
+        const err = error as { message?: string }; // narrow the type
       if (
-        (error instanceof Error &&
-          error?.message === "User not verified. OTP sent to your email.") ||
-        (error instanceof Error &&
-          error?.message ===
+        (
+          err?.message === "User not verified. OTP sent to your email.") ||
+        (
+          err?.message ===
             "User not verified. Please share the OTP to verify")
       ) {
         setShowOtpInput(true); // show OTP input

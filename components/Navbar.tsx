@@ -11,11 +11,28 @@ import {
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { api } from "@/app/lib/api";
 
 const Navbar = () => {
+  const router = useRouter();
   const [menuIcon, setMenuIcon] = useState(false);
+  const [open, setOpen] = useState(false);
   const handleToggleMenu = () => {
     setMenuIcon(!menuIcon);
+  };
+  const handleLogout = async () => {
+    try {
+      const res = await api("/auth/logout", {
+        method: "GET",
+        credentials: "include",
+      });
+      if (res.ok) {
+        router.push("/login");
+      }
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
   };
   return (
     <header className="bg-heart text-white w-full ease-in duration-300 fixed top-0 left-0 z-10">
@@ -39,11 +56,43 @@ const Navbar = () => {
         {/*  */}
         <div className="hidden md:flex">
           <div className="flex">
-            <Link href={"/"}>
+            <div
+              className="relative inline-block group"
+              // onMouseEnter={() => setOpen(true)}
+              // onMouseLeave={() => setOpen(false)}
+            >
               <button className="mr-5">
                 <FontAwesomeIcon icon={faUser} />
               </button>
-            </Link>
+              <div className="absolute right-0 hidden group-hover:block w-48 bg-white rounded-md shadow-lg z-50 border text-gray-700">
+                <ul className="py-1 text-sm">
+                  <li>
+                    <Link
+                      href="/orders"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                    >
+                      Orders
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/profile"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                    >
+                      Manage Profile
+                    </Link>
+                  </li>
+                  <li>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500"
+                    >
+                      Logout
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
             <Link href={"/"}>
               <button className="mr-5">
                 <FontAwesomeIcon icon={faMagnifyingGlass} />

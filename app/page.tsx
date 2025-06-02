@@ -1,10 +1,10 @@
 import Home from "@/components/Home";
-import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
+import FullPageLoader from "@/components/ui/FullPageLoader";
 import { Suspense } from "react";
 
 export default function ParentHome() {
   return (
-    <Suspense fallback={<LoadingSkeleton />}>
+    <Suspense fallback={<FullPageLoader/>}>
       <Home />
     </Suspense>
   );

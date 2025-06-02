@@ -17,7 +17,6 @@ import { api } from "@/app/lib/api";
 const Navbar = () => {
   const router = useRouter();
   const [menuIcon, setMenuIcon] = useState(false);
-  const [open, setOpen] = useState(false);
   const handleToggleMenu = () => {
     setMenuIcon(!menuIcon);
   };

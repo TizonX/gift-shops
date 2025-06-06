@@ -13,13 +13,19 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/app/lib/api";
+import { useCart } from "@/app/context/CartContext";
+import { useProfile } from "@/app/context/ProfileContext";
 
 const Navbar = () => {
   const router = useRouter();
+  const { cartItems } = useCart();
+  const { profile } = useProfile();
   const [menuIcon, setMenuIcon] = useState(false);
+
   const handleToggleMenu = () => {
     setMenuIcon(!menuIcon);
   };
+
   const handleLogout = async () => {
     try {
       const res = await api("/auth/logout", {
@@ -33,6 +39,7 @@ const Navbar = () => {
       console.error("Logout failed:", err);
     }
   };
+
   return (
     <header className="bg-heart text-white w-full ease-in duration-300 fixed top-0 left-0 z-10">
       <nav className="max-w-[1366px] mx-auto h-[60px] flex justify-between items-center p-4">
@@ -55,13 +62,14 @@ const Navbar = () => {
         {/*  */}
         <div className="hidden md:flex">
           <div className="flex">
-            <div
-              className="relative inline-block group"
-              // onMouseEnter={() => setOpen(true)}
-              // onMouseLeave={() => setOpen(false)}
-            >
-              <button className="mr-5">
+            <div className="relative inline-block group">
+              <button className="mr-5 flex items-center">
                 <FontAwesomeIcon icon={faUser} />
+                {profile && profile.data && (
+                  <span className="ml-2 text-sm hidden lg:inline">
+                    {profile.data.name}
+                  </span>
+                )}
               </button>
               <div className="absolute right-0 hidden group-hover:block w-48 bg-white rounded-md shadow-lg z-50 border text-gray-700">
                 <ul className="py-1 text-sm">
@@ -97,9 +105,14 @@ const Navbar = () => {
                 <FontAwesomeIcon icon={faMagnifyingGlass} />
               </button>
             </Link>
-            <Link href={"/"}>
-              <button className="mr-5">
+            <Link href={"/checkout"}>
+              <button className="mr-5 relative">
                 <FontAwesomeIcon icon={faShoppingBag} />
+                {cartItems.length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                    {cartItems.length}
+                  </span>
+                )}
               </button>
             </Link>
           </div>
@@ -120,7 +133,40 @@ const Navbar = () => {
               : "md:hidden absolute top-[100px] right-0 bottom-0 left-[-100%] flex justify-center items-center w-full h-screen bg-heart text-white ease-in duration-300"
           }
         >
-          device
+          <div className="w-full">
+            <ul className="text-center">
+              <li className="py-4">
+                <Link href="/" onClick={handleToggleMenu}>
+                  Gifts
+                </Link>
+              </li>
+              <li className="py-4">
+                <Link href="/" onClick={handleToggleMenu}>
+                  Home Decor
+                </Link>
+              </li>
+              <li className="py-4">
+                <Link href="/profile" onClick={handleToggleMenu}>
+                  Profile
+                </Link>
+              </li>
+              <li className="py-4">
+                <Link href="/orders" onClick={handleToggleMenu}>
+                  Orders
+                </Link>
+              </li>
+              <li className="py-4">
+                <Link href="/checkout" onClick={handleToggleMenu}>
+                  Cart ({cartItems.length})
+                </Link>
+              </li>
+              <li className="py-4">
+                <button onClick={handleLogout} className="text-red-300">
+                  Logout
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
       </nav>
     </header>

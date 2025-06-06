@@ -47,7 +47,7 @@ const Filter: React.FC<FilterProps> = ({
   };
 
   return (
-    <details className="border-b py-2">
+    <details className="border-b py-2" open>
       <summary className="flex justify-between w-full text-lg font-semibold cursor-pointer">
         {FilterName.charAt(0).toUpperCase() + FilterName.slice(1)}
         <span>

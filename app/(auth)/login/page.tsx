@@ -37,12 +37,12 @@ export default function SigninPage() {
         method: "POST",
         body: JSON.stringify(formData),
         credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        }
       });
       const data = await res.json();
       if (data?.status === 1) {
-        // Set cookie manually if needed
-        document.cookie = `jwt=${data.token}; path=/; max-age=604800; SameSite=Strict`;
-        
         // Redirect to home page
         router.push("/");
         

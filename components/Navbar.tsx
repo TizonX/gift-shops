@@ -33,7 +33,11 @@ const Navbar = () => {
         credentials: "include",
       });
       if (res.ok) {
+        // Redirect to login
         router.push("/login");
+        
+        // Force a refresh to clear all states
+        window.location.reload();
       }
     } catch (err) {
       console.error("Logout failed:", err);

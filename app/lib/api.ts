@@ -6,14 +6,25 @@ const BASE_URL =
     : "http://localhost:5000/api/v1";
 
 export const api = async (endpoint: string, options: RequestInit = {}) => {
-  const res = await fetch(`${BASE_URL}${endpoint}`, {
+  const defaultHeaders = {
+    "Content-Type": "application/json",
+    // Add any default headers here
+  };
+
+  const config: RequestInit = {
     ...options,
-    credentials: 'include',
+    credentials: 'include', // This is crucial for cookies
     headers: {
-      "Content-Type": "application/json",
+      ...defaultHeaders,
       ...(options.headers || {}),
     },
-  });
+  };
 
-  return res;
+  try {
+    const res = await fetch(`${BASE_URL}${endpoint}`, config);
+    return res;
+  } catch (error) {
+    console.error('API Error:', error);
+    throw error;
+  }
 };

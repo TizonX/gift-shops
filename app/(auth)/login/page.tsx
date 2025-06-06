@@ -44,10 +44,10 @@ export default function SigninPage() {
       const data = await res.json();
       if (data?.status === 1) {
         // Redirect to home page
-        router.push("/");
+        // router.push("/");
         
         // Force a hard refresh to ensure everything is reloaded with the new auth state
-        window.location.reload();
+        // window.location.reload();
       } else {
         setMessage(data.message || "Login failed");
       }

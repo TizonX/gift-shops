@@ -39,19 +39,16 @@ export default function SigninPage() {
         credentials: "include",
       });
       const data = await res.json();
-      if (res.ok) {
+      if (data?.status === 1) {
         router.push("/");
       } else {
         setMessage(data.message || "Login failed");
       }
     } catch (error: unknown) {
-        const err = error as { message?: string }; // narrow the type
+      const err = error as { message?: string }; // narrow the type
       if (
-        (
-          err?.message === "User not verified. OTP sent to your email.") ||
-        (
-          err?.message ===
-            "User not verified. Please share the OTP to verify")
+        err?.message === "User not verified. OTP sent to your email." ||
+        err?.message === "User not verified. Please share the OTP to verify"
       ) {
         setShowOtpInput(true); // show OTP input
         setMessage("OTP sent to your phone/email");

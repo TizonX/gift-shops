@@ -1,7 +1,7 @@
 "use client";
 import { api } from "@/app/lib/api";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { useState, ChangeEvent, FormEvent } from "react";
 
 interface FormData {
@@ -13,7 +13,7 @@ interface FormErrors {
   password?: string;
 }
 export default function SigninPage() {
-  const router = useRouter();
+  // const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",

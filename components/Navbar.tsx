@@ -32,12 +32,10 @@ const Navbar = () => {
         method: "GET",
         credentials: "include",
       });
-      if (res.ok) {
+      if (res) {
         // Redirect to login
         router.push("/login");
         
-        // Force a refresh to clear all states
-        window.location.reload();
       }
     } catch (err) {
       console.error("Logout failed:", err);

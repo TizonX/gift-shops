@@ -10,11 +10,11 @@ export function middleware(req: NextRequest) {
   const isPublic = publicPaths.some((path) => pathname.startsWith(path));
 
   // If user is NOT logged in and trying to access protected route, redirect to login
-  if (!isPublic && !isLoggedIn) {
-    const loginUrl = req.nextUrl.clone();
-    loginUrl.pathname = "/login";
-    return NextResponse.redirect(loginUrl);
-  }
+  // if (!isPublic && !isLoggedIn) {
+  //   const loginUrl = req.nextUrl.clone();
+  //   loginUrl.pathname = "/login";
+  //   return NextResponse.redirect(loginUrl);
+  // }
 
   // If user IS logged in and trying to access login/signup, redirect to dashboard
   if (isLoggedIn && isPublic) {

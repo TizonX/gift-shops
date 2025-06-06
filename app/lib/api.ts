@@ -8,6 +8,7 @@ const BASE_URL =
 export const api = async (endpoint: string, options: RequestInit = {}) => {
   const res = await fetch(`${BASE_URL}${endpoint}`, {
     ...options,
+    credentials: 'include',
     headers: {
       "Content-Type": "application/json",
       ...(options.headers || {}),

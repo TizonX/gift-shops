@@ -6,15 +6,20 @@ export function middleware(req: NextRequest) {
   const isLoggedIn = !!token;
   const { pathname } = req.nextUrl;
 
+  // Define public paths (no auth required)
   const publicPaths = ["/login", "/signup"];
   const isPublic = publicPaths.some((path) => pathname.startsWith(path));
 
+  // Define protected paths (auth required)
+  const protectedPaths = ["/profile", "/orders", "/checkout"];
+  const isProtected = protectedPaths.some((path) => pathname.startsWith(path));
+
   // If user is NOT logged in and trying to access protected route, redirect to login
-  // if (!isPublic && !isLoggedIn) {
-  //   const loginUrl = req.nextUrl.clone();
-  //   loginUrl.pathname = "/login";
-  //   return NextResponse.redirect(loginUrl);
-  // }
+  if (isProtected && !isLoggedIn) {
+    const loginUrl = req.nextUrl.clone();
+    loginUrl.pathname = "/login";
+    return NextResponse.redirect(loginUrl);
+  }
 
   // If user IS logged in and trying to access login/signup, redirect to dashboard
   if (isLoggedIn && isPublic) {
@@ -29,11 +34,12 @@ export function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     /*
-      Apply middleware to all paths EXCEPT:
-      - _next/static (Next.js static files)
-      - _next/image (Next.js image optimization)
-      - favicon.ico
-    */
-    "/((?!_next/static|_next/image|favicon.ico).*)",
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 };

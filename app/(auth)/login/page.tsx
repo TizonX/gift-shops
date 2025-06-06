@@ -40,7 +40,14 @@ export default function SigninPage() {
       });
       const data = await res.json();
       if (data?.status === 1) {
+        // Set cookie manually if needed
+        document.cookie = `jwt=${data.token}; path=/; max-age=604800; SameSite=Strict`;
+        
+        // Redirect to home page
         router.push("/");
+        
+        // Force a hard refresh to ensure everything is reloaded with the new auth state
+        window.location.reload();
       } else {
         setMessage(data.message || "Login failed");
       }

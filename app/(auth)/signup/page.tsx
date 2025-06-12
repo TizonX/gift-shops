@@ -2,6 +2,7 @@
 import { api } from "@/app/lib/api";
 import Link from "next/link";
 import { useState, ChangeEvent, FormEvent } from "react";
+import Cookies from 'js-cookie';
 
 interface FormData {
   name: string;
@@ -66,11 +67,17 @@ export default function SignupPage() {
         body: JSON.stringify(formData),
       });
 
+      const data = await res.json();
       if (res.ok) {
-        setShowOtpInput(true); // show OTP input
+        // Store token if provided
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          // Also store in cookies
+          Cookies.set('token', data.token, { expires: 7 }); // Expires in 7 days
+        }
+        setShowOtpInput(true);
         setMessage("OTP sent to your phone/email");
       } else {
-        const data = await res.json();
         setMessage(data.message || "Signup failed");
       }
     } catch (err) {
@@ -88,10 +95,18 @@ export default function SignupPage() {
         body: JSON.stringify({ email: formData.email, otp }),
       });
 
+      const data = await res.json();
       if (res.ok) {
+        // Store token if provided
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          // Also store in cookies
+          Cookies.set('token', data.token, { expires: 7 }); // Expires in 7 days
+        }
         setMessage("Account verified!");
+        // Force a full page refresh to home page
+        window.location.href = '/';
       } else {
-        const data = await res.json();
         setMessage(data.message || "Invalid OTP");
       }
     } catch (err) {
@@ -166,7 +181,7 @@ export default function SignupPage() {
             type="tel"
             value={otp}
             onChange={(e) => {
-              const onlyNums = e.target.value.replace(/\D/g, ""); // remove non-digits
+              const onlyNums = e.target.value.replace(/\D/g, "");
               setOtp(onlyNums);
             }}
             placeholder="Enter 6-digit OTP"

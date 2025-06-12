@@ -11,13 +11,12 @@ import {
 
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { api } from "@/app/lib/api";
 import { useCart } from "@/app/context/CartContext";
 import { useProfile } from "@/app/context/ProfileContext";
+import Cookies from "js-cookie";
 
 const Navbar = () => {
-  const router = useRouter();
   const { cartItems } = useCart();
   const { profile } = useProfile();
   const [menuIcon, setMenuIcon] = useState(false);
@@ -30,12 +29,14 @@ const Navbar = () => {
     try {
       const res = await api("/auth/logout", {
         method: "GET",
-        credentials: "include",
       });
-      if (res) {
-        // Redirect to login
-        router.push("/login");
-        
+      
+      if (res.ok) {
+        // Clear the token from both localStorage and cookies
+        localStorage.removeItem('token');
+        Cookies.remove('token');
+        // Force a full page refresh to login page
+        window.location.href = '/login';
       }
     } catch (err) {
       console.error("Logout failed:", err);
@@ -43,25 +44,12 @@ const Navbar = () => {
   };
 
   return (
-    <header className="bg-heart text-white w-full ease-in duration-300 fixed top-0 left-0 z-10">
-      <nav className="max-w-[1366px] mx-auto h-[60px] flex justify-between items-center p-4">
-        <div>
-          <Link href={"/"}>
-            <span className="font-extrabold text-2xl md:text-2xl xl:text-2xl uppercase">
-              Gift Shops
-            </span>
-          </Link>
-        </div>
-        {/*  */}
-        <ul className="hidden md:flex font-semibold text-1xl lg:text-[20px] text-slate-800">
-          <li className="mr-4 lg:mr-8 text-white hover:text-red-200">
-            <Link href={"/"}>Gifts</Link>
-          </li>
-          <li className="mr-4 lg:mr-8 text-white hover:text-red-200">
-            <Link href={"/"}>Home Decor</Link>
-          </li>
-        </ul>
-        {/*  */}
+    <header className="fixed w-full bg-white z-50 top-0 shadow-sm">
+      <nav className="max-w-[1440px] mx-auto flex justify-between items-center px-4 py-4">
+        <Link href="/" className="text-xl font-bold">
+          Gift Shops
+        </Link>
+
         <div className="hidden md:flex">
           <div className="flex">
             <div className="relative inline-block group">
@@ -108,7 +96,7 @@ const Navbar = () => {
               </button>
             </Link>
             <Link href={"/checkout"}>
-              <button className="mr-5 relative">
+              <button className="relative">
                 <FontAwesomeIcon icon={faShoppingBag} />
                 {cartItems.length > 0 && (
                   <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
@@ -119,55 +107,57 @@ const Navbar = () => {
             </Link>
           </div>
         </div>
-        {/*  */}
-        <div className="flex md:hidden" onClick={handleToggleMenu}>
-          {!menuIcon ? (
-            <FontAwesomeIcon icon={faBars} />
-          ) : (
-            <FontAwesomeIcon icon={faXmark} />
-          )}
+
+        <div className="md:hidden">
+          <button onClick={handleToggleMenu}>
+            {menuIcon ? (
+              <FontAwesomeIcon icon={faXmark} className="w-6 h-6" />
+            ) : (
+              <FontAwesomeIcon icon={faBars} className="w-6 h-6" />
+            )}
+          </button>
         </div>
-        {/* small screen - Navbar */}
+
         <div
-          className={
-            menuIcon
-              ? "md:hidden absolute top-[100px] right-0 bottom-0 left-0 flex justify-center items-center w-full h-screen bg-heart text-white ease-in duration-300"
-              : "md:hidden absolute top-[100px] right-0 bottom-0 left-[-100%] flex justify-center items-center w-full h-screen bg-heart text-white ease-in duration-300"
-          }
+          className={`${
+            menuIcon ? "block" : "hidden"
+          } md:hidden fixed inset-0 bg-gray-900 bg-opacity-25 backdrop-blur-sm`}
         >
-          <div className="w-full">
-            <ul className="text-center">
-              <li className="py-4">
-                <Link href="/" onClick={handleToggleMenu}>
-                  Gifts
-                </Link>
-              </li>
-              <li className="py-4">
-                <Link href="/" onClick={handleToggleMenu}>
-                  Home Decor
-                </Link>
-              </li>
-              <li className="py-4">
-                <Link href="/profile" onClick={handleToggleMenu}>
-                  Profile
-                </Link>
-              </li>
-              <li className="py-4">
-                <Link href="/orders" onClick={handleToggleMenu}>
-                  Orders
-                </Link>
-              </li>
-              <li className="py-4">
-                <Link href="/checkout" onClick={handleToggleMenu}>
-                  Cart ({cartItems.length})
-                </Link>
-              </li>
-              <li className="py-4">
-                <button onClick={handleLogout} className="text-red-300">
-                  Logout
-                </button>
-              </li>
-            </ul>
+          <div className="fixed top-[68px] right-0 w-[250px] bg-white h-full shadow-xl">
+            <div className="w-full">
+              <ul className="text-center">
+                <li className="py-4">
+                  <Link href="/" onClick={handleToggleMenu}>
+                    Gifts
+                  </Link>
+                </li>
+                <li className="py-4">
+                  <Link href="/" onClick={handleToggleMenu}>
+                    Home Decor
+                  </Link>
+                </li>
+                <li className="py-4">
+                  <Link href="/profile" onClick={handleToggleMenu}>
+                    Profile
+                  </Link>
+                </li>
+                <li className="py-4">
+                  <Link href="/orders" onClick={handleToggleMenu}>
+                    Orders
+                  </Link>
+                </li>
+                <li className="py-4">
+                  <Link href="/checkout" onClick={handleToggleMenu}>
+                    Cart ({cartItems.length})
+                  </Link>
+                </li>
+                <li className="py-4">
+                  <button onClick={handleLogout} className="text-red-300">
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </nav>

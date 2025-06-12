@@ -1,8 +1,8 @@
 "use client";
 import { api } from "@/app/lib/api";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState, ChangeEvent, FormEvent } from "react";
+import Cookies from 'js-cookie';
 
 interface FormData {
   email: string;
@@ -13,7 +13,6 @@ interface FormErrors {
   password?: string;
 }
 export default function SigninPage() {
-  const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -29,6 +28,7 @@ export default function SigninPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
+  
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -36,34 +36,39 @@ export default function SigninPage() {
       const res = await api("/auth/login", {
         method: "POST",
         body: JSON.stringify(formData),
-        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         }
       });
+      
       const data = await res.json();
+      
       if (data?.status === 1) {
-        // Redirect to home page
-        router.push("/");
-        
-        // Force a hard refresh to ensure everything is reloaded with the new auth state
-        // window.location.reload();
+        // Store the token if it exists in the response
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          // Also store in cookies
+          Cookies.set('token', data.token, { expires: 7 }); // Expires in 7 days
+        }
+        // Force a full page refresh to home page
+        window.location.href = '/';
       } else {
         setMessage(data.message || "Login failed");
       }
     } catch (error: unknown) {
-      const err = error as { message?: string }; // narrow the type
+      const err = error as { message?: string };
       if (
         err?.message === "User not verified. OTP sent to your email." ||
         err?.message === "User not verified. Please share the OTP to verify"
       ) {
-        setShowOtpInput(true); // show OTP input
+        setShowOtpInput(true);
         setMessage("OTP sent to your phone/email");
       } else {
         setMessage("Something went wrong");
       }
     }
   };
+
   const handleOtpSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
@@ -72,10 +77,18 @@ export default function SigninPage() {
         body: JSON.stringify({ email: formData.email, otp }),
       });
 
+      const data = await res.json();
       if (res.ok) {
+        // Store the token if it exists in the response
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          // Also store in cookies
+          Cookies.set('token', data.token, { expires: 7 }); // Expires in 7 days
+        }
         setMessage("Account verified!");
+        // Force a full page refresh to home page
+        window.location.href = '/';
       } else {
-        const data = await res.json();
         setMessage(data.message || "Invalid OTP");
       }
     } catch (err) {
@@ -83,9 +96,10 @@ export default function SigninPage() {
       setMessage("OTP verification failed");
     }
   };
+
   return (
     <div className="max-w-md mx-auto space-y-4">
-      <h2 className="text-xl font-bold text-center">Signup</h2>
+      <h2 className="text-xl font-bold text-center">Login</h2>
       {message && (
         <p className="text-center text-sm text-blue-500">{message}</p>
       )}
@@ -128,7 +142,7 @@ export default function SigninPage() {
             type="tel"
             value={otp}
             onChange={(e) => {
-              const onlyNums = e.target.value.replace(/\D/g, ""); // remove non-digits
+              const onlyNums = e.target.value.replace(/\D/g, "");
               setOtp(onlyNums);
             }}
             placeholder="Enter 6-digit OTP"

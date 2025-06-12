@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "../components/Navbar";
 import { CartProvider } from "./context/CartContext";
 import { ProfileProvider } from "./context/ProfileContext";
+import AuthCheck from "@/components/AuthCheck";
 
 export const metadata: Metadata = {
   title: "Gift Shops",
@@ -21,6 +22,7 @@ export default function RootLayout({
           <CartProvider>
             <Navbar />
             {children}
+            <AuthCheck />
           </CartProvider>
         </ProfileProvider>
       </body>

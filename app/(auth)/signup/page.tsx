@@ -2,7 +2,7 @@
 import { api } from "@/app/lib/api";
 import Link from "next/link";
 import { useState, ChangeEvent, FormEvent } from "react";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 interface FormData {
   name: string;
@@ -30,6 +30,7 @@ export default function SignupPage() {
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [otp, setOtp] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -50,14 +51,18 @@ export default function SignupPage() {
       newErrors.password = "Password must be at least 6 characters";
     if (!/^\d{10}$/.test(phone))
       newErrors.phone = "Phone number must be 10 digits";
+
     return newErrors;
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+
     const validationErrors = validate(formData);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      setLoading(false);
       return;
     }
 
@@ -71,9 +76,9 @@ export default function SignupPage() {
       if (res.ok) {
         // Store token if provided
         if (data.token) {
-          localStorage.setItem('token', data.token);
+          localStorage.setItem("token", data.token);
           // Also store in cookies
-          Cookies.set('token', data.token, { expires: 7 }); // Expires in 7 days
+          Cookies.set("token", data.token, { expires: 7 }); // Expires in 7 days
         }
         setShowOtpInput(true);
         setMessage("OTP sent to your phone/email");
@@ -83,6 +88,8 @@ export default function SignupPage() {
     } catch (err) {
       console.error(err);
       setMessage("Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -99,13 +106,13 @@ export default function SignupPage() {
       if (res.ok) {
         // Store token if provided
         if (data.token) {
-          localStorage.setItem('token', data.token);
+          localStorage.setItem("token", data.token);
           // Also store in cookies
-          Cookies.set('token', data.token, { expires: 7 }); // Expires in 7 days
+          Cookies.set("token", data.token, { expires: 7 }); // Expires in 7 days
         }
         setMessage("Account verified!");
         // Force a full page refresh to home page
-        window.location.href = '/';
+        window.location.href = "/";
       } else {
         setMessage(data.message || "Invalid OTP");
       }
@@ -170,9 +177,18 @@ export default function SignupPage() {
 
           <button
             type="submit"
-            className="bg-gray-900 hover:bg-white text-white hover:text-black border hover:border-gray-900 duration-200 p-2 w-full"
+            className="group bg-gray-900 hover:bg-white text-white hover:text-black border hover:border-gray-900 duration-200 p-2 w-full flex justify-center items-center"
+            disabled={loading}
           >
-            Sign Up
+            {loading ? (
+              <div className="flex space-x-1 items-center h-5">
+                <span className="w-2 h-2 bg-white group-hover:bg-black rounded-sm animate-bounce [animation-delay:-0.2s]"></span>
+                <span className="w-2 h-2 bg-white group-hover:bg-black rounded-sm animate-bounce [animation-delay:-0.1s]"></span>
+                <span className="w-2 h-2 bg-white group-hover:bg-black rounded-sm animate-bounce"></span>
+              </div>
+            ) : (
+              "Sign Up"
+            )}
           </button>
         </form>
       ) : (

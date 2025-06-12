@@ -10,16 +10,16 @@ export function middleware(req: NextRequest) {
   const isLoggedIn = !!token;
   const { pathname } = req.nextUrl;
 
-  // Debug logging
-  console.log('Middleware Debug:', {
-    pathname,
-    authHeader,
-    cookieToken,
-    token,
-    isLoggedIn,
-    cookies: req.cookies.getAll(),
-    headers: Object.fromEntries(req.headers.entries())
-  });
+  // // Debug logging
+  // console.log('Middleware Debug:', {
+  //   pathname,
+  //   authHeader,
+  //   cookieToken,
+  //   token,
+  //   isLoggedIn,
+  //   cookies: req.cookies.getAll(),
+  //   headers: Object.fromEntries(req.headers.entries())
+  // });
 
   // Define public paths (no auth required)
   const publicPaths = ["/login", "/signup"];

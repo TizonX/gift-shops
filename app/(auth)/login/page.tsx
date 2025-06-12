@@ -2,7 +2,7 @@
 import { api } from "@/app/lib/api";
 import Link from "next/link";
 import { useState, ChangeEvent, FormEvent } from "react";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 interface FormData {
   email: string;
@@ -22,36 +22,37 @@ export default function SigninPage() {
   const [message, setMessage] = useState("");
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [otp, setOtp] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
-  
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
+    setLoading(true);
     try {
       const res = await api("/auth/login", {
         method: "POST",
         body: JSON.stringify(formData),
         headers: {
           "Content-Type": "application/json",
-        }
+        },
       });
-      
+
       const data = await res.json();
-      
+
       if (data?.status === 1) {
         // Store the token if it exists in the response
         if (data.token) {
-          localStorage.setItem('token', data.token);
+          localStorage.setItem("token", data.token);
           // Also store in cookies
-          Cookies.set('token', data.token, { expires: 7 }); // Expires in 7 days
+          Cookies.set("token", data.token, { expires: 7 }); // Expires in 7 days
         }
         // Force a full page refresh to home page
-        window.location.href = '/';
+        window.location.href = "/";
       } else {
         setMessage(data.message || "Login failed");
       }
@@ -66,6 +67,8 @@ export default function SigninPage() {
       } else {
         setMessage("Something went wrong");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -81,13 +84,13 @@ export default function SigninPage() {
       if (res.ok) {
         // Store the token if it exists in the response
         if (data.token) {
-          localStorage.setItem('token', data.token);
+          localStorage.setItem("token", data.token);
           // Also store in cookies
-          Cookies.set('token', data.token, { expires: 7 }); // Expires in 7 days
+          Cookies.set("token", data.token, { expires: 7 }); // Expires in 7 days
         }
         setMessage("Account verified!");
         // Force a full page refresh to home page
-        window.location.href = '/';
+        window.location.href = "/";
       } else {
         setMessage(data.message || "Invalid OTP");
       }
@@ -131,9 +134,18 @@ export default function SigninPage() {
 
           <button
             type="submit"
-            className="bg-gray-900 hover:bg-white text-white hover:text-black border hover:border-gray-900 duration-200 p-2 w-full"
+            className="group bg-gray-900 hover:bg-white text-white hover:text-black border hover:border-gray-900 duration-200 p-2 w-full flex justify-center items-center"
+            disabled={loading}
           >
-            Login
+            {loading ? (
+              <div className="flex space-x-1 items-center h-5">
+                <span className="w-2 h-2 bg-white group-hover:bg-black rounded-sm animate-bounce [animation-delay:-0.2s]"></span>
+                <span className="w-2 h-2 bg-white group-hover:bg-black rounded-sm animate-bounce [animation-delay:-0.1s]"></span>
+                <span className="w-2 h-2 bg-white group-hover:bg-black rounded-sm animate-bounce"></span>
+              </div>
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
       ) : (
